@@ -7,14 +7,7 @@ import argparse
 from pprint import pprint
 
 
-def get_catalog_from_excel():
-    parser = argparse.ArgumentParser(
-        description='Запуск сайта'
-    )
-    parser.add_argument('--filepath', help='Укажите путь к файлу', default='wine3.xlsx')
-    args = parser.parse_args()
-    filepath = args.filepath
-
+def get_catalog_from_excel(filepath):
     excel_data_df = pandas.read_excel(
         filepath,
         sheet_name='Лист1',
@@ -40,6 +33,13 @@ def get_age():
 
 
 def main():
+    parser = argparse.ArgumentParser(
+        description='Запуск сайта'
+    )
+    parser.add_argument('--filepath', help='Укажите путь к файлу', default='wine_catalog.xlsx')
+    args = parser.parse_args()
+    filepath = args.filepath
+
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
@@ -47,7 +47,7 @@ def main():
 
     template = env.get_template('template.html')
     rendered_page = template.render(
-        drinks_catalog=get_catalog_from_excel(),
+        drinks_catalog=get_catalog_from_excel(filepath),
         age_text=get_age()
     )
     with open('index.html', 'w', encoding="utf8") as file:
